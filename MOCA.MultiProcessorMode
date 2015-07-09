@@ -1,0 +1,31 @@
+#!/bin/bash
+
+Procs=$1
+Ext=$2
+Proc=0
+while [ $Proc -lt $Procs ]
+do
+    echo "#!/bin/bash" > moca.qsub
+    echo "#ICM submission script for multiple serial jobs" >> moca.qsub
+    echo "#" >> moca.qsub
+    echo "#PBS -l nodes=1:ppn=8,walltime=48:00:00" >> moca.qsub
+    echo "#PBS -N serialx8" >> moca.qsub
+    echo "" >> moca.qsub
+    echo "# DIRECTORY TO RUN - $PBS_O_WORKDIR is directory job was submitted from" >> moca.qsub
+    echo "cd \$PBS_O_WORKDIR" >> moca.qsub
+    echo "" >> moca.qsub
+    echo "# EXECUTION COMMAND; ampersand off 8 jobs and wait" >> moca.qsub
+    PPN=1
+    while [ $PPN -le 8 ] && [ $Proc -lt $Procs ]
+    do
+	mkdir $Proc.$Ext; cp Paths Arguments $Proc.$Ext; ln -s ~/MOCA/moca.py $Proc.$Ext/moca
+	sed "s/MultiProcessMode = 0 1/MultiProcessMode = $Proc $Procs/g" $Proc.$Ext/Arguments > $Proc.$Ext/tmp
+	mv $Proc.$Ext/tmp $Proc.$Ext/Arguments	
+        echo "(cd $Proc.$Ext; ./moca) &" >> moca.qsub
+	PPN=$[ PPN + 1 ]
+	Proc=$[ $Proc + 1 ]
+    done
+    echo wait >> moca.qsub
+    qsub moca.qsub
+    rm moca.qsub
+done
