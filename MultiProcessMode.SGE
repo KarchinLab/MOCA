@@ -1,0 +1,27 @@
+#!/usr/bin/bash
+
+Procs=$1
+Ext=$2
+Proc=0
+
+echo "#!/bin/bash" > moca.qsub
+echo "#Example submission script for multiple serial jobs on the Sun Grid Engine" >> moca.qsub
+echo "#" >> moca.qsub
+echo "#$ -N sge.moca" >> moca.qsub
+echo "#$ -l h_rt=48:00:00" >> moca.qsub
+echo "#$ -cwd" >> moca.qsub
+echo "" >> moca.qsub
+echo "python moca" >> moca.qsub
+echo wait >> moca.qsub
+while [ $Proc -lt $Procs ]
+do
+    mkdir $Proc.$Ext; cp Paths Arguments moca.qsub $Proc.$Ext; ln -s ~/MOCA/moca.py $Proc.$Ext/moca
+    sed "s/MultiProcessMode = 0 1/MultiProcessMode = $Proc $Procs/g" $Proc.$Ext/Arguments > $Proc.$Ext/tmp
+    mv $Proc.$Ext/tmp $Proc.$Ext/Arguments	
+    cd $Proc.$Ext
+    qsub moca.qsub
+    rm moca.qsub
+    cd ..
+    Proc=$[ $Proc + 1 ]
+done
+rm moca.qsub

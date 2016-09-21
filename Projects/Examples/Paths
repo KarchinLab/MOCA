@@ -1,0 +1,7 @@
+MOCA.data = ./MOCA.data
+MOCA.results = ./MOCA.results
+
+Mutation = ${HOME}/MOCA/Database/Examples/Mutation.csv
+CNA = ${HOME}/MOCA/Database/Examples/CNA.csv
+Methylation = ${HOME}/MOCA/Database/Examples/Methylation.csv
+HPV = ${HOME}/MOCA/Database/Examples/HPV.csv

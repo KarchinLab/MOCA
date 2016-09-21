@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#Run as bash MakeTags
+#Using emacs, open a .py from the MOCA source file and evoke using
+#the M-. approch
+#Google python etags, or maybe etags commands
+#Allows you to jump from function to function using meta keys
+
+find . -name "*.py" | etags --output TAGS -

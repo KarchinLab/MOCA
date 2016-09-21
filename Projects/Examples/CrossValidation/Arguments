@@ -1,7 +1,0 @@
-Data = Drug Expression
-LeaveSomeOut = 42
-Phenotype = Drug
-Optimization = 100 10 0.01
-BooleanSets = 3 0 1
-Seed = 123
-MinimumPerformance = sens=0.70 spec=0.70
